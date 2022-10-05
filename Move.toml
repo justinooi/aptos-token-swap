@@ -8,4 +8,4 @@ rev = 'main'
 subdir = 'aptos-move/framework/aptos-framework'
 
 [addresses]
-TokenSwap = "0xd5603ef3c17e498e5b3b084e5a1fcdbdd5671be6d64e361e4bfd06d7bd47d3bc"
+TokenSwap = "0x6ef9fe6fe2cbae764c7b0d8a308307e40280cbf49f1d53c931e68842eca55e17"
