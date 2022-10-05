@@ -1,7 +1,6 @@
 module TokenSwap::swap {
 
-    // Token Swap that allows someone to create a CoinStore of any token type (non-native), and in return allow
-    // others to swap said non-native token for native Aptos token.
+    // Token Swap that allows someone to create a CoinStore of any token type (non-native), and in return allow others to swap for said non-native token for native Aptos token.
 
     // Imports
     use std::signer;
@@ -21,6 +20,8 @@ module TokenSwap::swap {
 
     struct EscrowCoinStore<phantom CoinType> has store, key {
         escrow_store: coin::Coin<CoinType>,
+        aptos_store: coin::Coin<AptosCoin>,
+        price_per_token: u64,
     }
 
     struct DepositEvent has drop, store {
@@ -29,18 +30,18 @@ module TokenSwap::swap {
         deposit_amount: u64,
     }
 
-    public entry fun deposit<CoinType>(account: &signer, amount: u64) acquires EscrowCoinStore {
+    public entry fun init_coinstore<CoinType>(account: &signer, amount: u64, cost: u64) acquires EscrowCoinStore {
         let depositor = signer::address_of(account);
         
         if (exists<EscrowCoinStore<CoinType>>(depositor)) {
             let existing_escrow = borrow_global_mut<EscrowCoinStore<CoinType>>(depositor);
+            let deposit = coin::withdraw<CoinType>(account, amount);
 
-            let the_deposit = coin::withdraw<CoinType>(account, amount);
-
-            coin::merge<CoinType>(&mut existing_escrow.escrow_store, the_deposit);
+            coin::merge<CoinType>(&mut existing_escrow.escrow_store, deposit);
         } else {
-            let the_deposit = coin::withdraw<CoinType>(account, amount);
-            move_to<EscrowCoinStore<CoinType>>(account, EscrowCoinStore { escrow_store: the_deposit });
+            let deposit = coin::withdraw<CoinType>(account, amount);
+            let aptos_init_cost = coin::withdraw<AptosCoin>(account, 1);
+            move_to<EscrowCoinStore<CoinType>>(account, EscrowCoinStore { escrow_store: deposit, aptos_store: aptos_init_cost ,price_per_token: cost});
         }
         // let escrow_events = borrow_global_mut<EscrowEventStore>(depositor);
         // event::emit_event<DepositEvent>(
@@ -71,7 +72,7 @@ module TokenSwap::swap {
         coin::transfer<AptosCoin>(&faucet, depositor_addr, 900);
         assert!(coin::balance<AptosCoin>(depositor_addr) == 900, 0);
 
-        deposit<AptosCoin>(&depositor, 500);
+        init_coinstore<AptosCoin>(&depositor, 500, 1);
         assert!(exists<EscrowCoinStore<AptosCoin>>(depositor_addr), 0);
     }
 }
