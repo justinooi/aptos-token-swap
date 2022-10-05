@@ -10,9 +10,10 @@ module TokenSwap::swap {
     use aptos_framework::managed_coin;
 
     // Errors
-
     const ERROR: u64 = 0;
 
+
+    // Coin Store Struct
     struct EscrowCoinStore<phantom CoinType> has store, key {
         escrow_store: coin::Coin<CoinType>,
         aptos_store: coin::Coin<AptosCoin>,
@@ -50,20 +51,42 @@ module TokenSwap::swap {
     }
 
     public entry fun swap_token<CoinType>(swapper: &signer, coinstore_owner: address, amount: u64) acquires EscrowCoinStore {
+        // get address of swapper
         let swapper_addr = signer::address_of(swapper);
         
-        assert!(exists<EscrowCoinStore<CoinType>>(coinstore_owner), 0);
+        // ensure coinstore exist for said cointype
+        assert!(exists<EscrowCoinStore<CoinType>>(coinstore_owner), ERROR);
 
+        // get mutable escrow coin store resource to manipulate value
         let escrow = borrow_global_mut<EscrowCoinStore<CoinType>>(coinstore_owner);
+
+        // get price per token
         let cost_multiplier = escrow.price_per_token;
+
+        // get cost in aptos octas
         let final_cost = amount * cost_multiplier;
         let aptos_deposit = coin::withdraw<AptosCoin>(swapper, final_cost);
 
+        // merge aptos coinstore together to get paid
         coin::merge<AptosCoin>(&mut escrow.aptos_store, aptos_deposit);
 
+        // create token coinstore to send to swapper
         let to_send_to_swapper = coin::extract<CoinType>(&mut escrow.escrow_store, amount);
-
         coin::deposit<CoinType>(swapper_addr, to_send_to_swapper);
+    }
+
+    public entry fun withdraw_funds<CoinType>(coinstore_owner: &signer, amount: u64) acquires EscrowCoinStore {
+        let owner_addr = signer::address_of(coinstore_owner);
+
+         // ensure coinstore exist for said cointype
+        assert!(exists<EscrowCoinStore<CoinType>>(owner_addr), ERROR);
+
+        // get mutable escrow coin store resource to manipulate value
+        let escrow = borrow_global_mut<EscrowCoinStore<CoinType>>(owner_addr);
+
+        // withdraw coinstore
+        let withdrawal_coinstore = coin::extract(&mut escrow.aptos_store, amount);
+        coin::deposit<AptosCoin>(owner_addr, withdrawal_coinstore);
     }
 
     #[test_only]
