@@ -1,7 +1,0 @@
----
-profiles:
-  test:
-    private_key: "0x1e17b59fda68ae66fd8867c31dfc79fd5b254ff478d470ee3d710ef014977ae4"
-    public_key: "0x09e9c1d286c1daa1c4edf566c7930ce296bf654559ffeb17b2a8b1457949f771"
-    account: a0eeea7a5b863112dc9dbf8448b2ed58b89c5b77c0cf5d629578e8ebcd164f2d
-    rest_url: "https://fullnode.devnet.aptoslabs.com/v1"
