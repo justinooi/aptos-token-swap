@@ -1,1 +1,4 @@
-.aptos/
+build
+.DS_Store
+aptos-framework
+.aptos
