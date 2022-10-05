@@ -1,0 +1,13 @@
+---
+profiles:
+  default:
+    private_key: "0x5512b69f970498addc1bfd2f83773e66281895736909b229c5e9c776a2b94138"
+    public_key: "0x09713ab17fe4a4890cf82d46471a19fc443b820670c77f8b73ee0757d504c3cc"
+    account: d5603ef3c17e498e5b3b084e5a1fcdbdd5671be6d64e361e4bfd06d7bd47d3bc
+    rest_url: "https://fullnode.devnet.aptoslabs.com/v1"
+    faucet_url: "https://faucet.devnet.aptoslabs.com/"
+  test:
+    private_key: "0x1e17b59fda68ae66fd8867c31dfc79fd5b254ff478d470ee3d710ef014977ae4"
+    public_key: "0x09e9c1d286c1daa1c4edf566c7930ce296bf654559ffeb17b2a8b1457949f771"
+    account: a0eeea7a5b863112dc9dbf8448b2ed58b89c5b77c0cf5d629578e8ebcd164f2d
+    rest_url: "https://fullnode.devnet.aptoslabs.com/v1"
