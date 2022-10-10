@@ -8,4 +8,5 @@ rev = 'main'
 subdir = 'aptos-move/framework/aptos-framework'
 
 [addresses]
-TokenSwap = "0x6ef9fe6fe2cbae764c7b0d8a308307e40280cbf49f1d53c931e68842eca55e17"
+TokenSwap = "0x2d7ab98be766df684e6bb5d0a6a98224300afca070cac3489fa9d26637b18670"
+MoonCoin = "0x2d7ab98be766df684e6bb5d0a6a98224300afca070cac3489fa9d26637b18670"

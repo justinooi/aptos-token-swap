@@ -89,6 +89,13 @@ module TokenSwap::swap {
         coin::deposit<AptosCoin>(owner_addr, withdrawal_coinstore);
     }
 
+    public entry fun update_price<CoinType>(coinstore_owner: &signer, new_price: u64) acquires EscrowCoinStore {
+        let owner_addr = signer::address_of(coinstore_owner);
+        assert!(exists<EscrowCoinStore<CoinType>>(owner_addr), ERROR);
+        let escrow = borrow_global_mut<EscrowCoinStore<CoinType>>(owner_addr);
+        escrow.price_per_token = new_price;
+    }
+
     #[test_only]
     struct TestCoin {}
 
